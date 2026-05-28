@@ -103,7 +103,7 @@ function generateMesh(w, h, cols=20, rows=15) {
 export default function PageBendApp() {
   const [code, setCode] = useState(DEFAULT_SHADER);
   const [params, setParams] = useState(DEFAULT_PARAMS);
-  const [cam, setCam] = useState({ yaw: -0.4, pitch: 0.3, dist: 400, px: 0, py: 0 });
+  const [cam, setCam] = useState({ yaw: -0.6, pitch: 0.35, dist: 320, px: 20, py: 0 });
   const [showVisuals, setShowVisuals] = useState(true);
   const [compileErr, setCompileErr] = useState(null);
   const [runtimeErr, setRuntimeErr] = useState(null);
@@ -249,13 +249,25 @@ export default function PageBendApp() {
         
         {/* Quick View Controls */}
         <div style={{position:'absolute', top:20, left:20, display:'flex', gap:5}}>
-            {['front', 'top', 'side', 'under'].map(v => (
-                <button key={v} onClick={() => setQuickView(v)} style={btnStyle}>{v.toUpperCase()}</button>
-            ))}
-            <button onClick={() => setShowVisuals(!showVisuals)} style={{...btnStyle, background: showVisuals ? '#238636' : '#30363d'}}>
-               {showVisuals ? 'VISUALIZER: ON' : 'VISUALIZER: OFF'}
-            </button>
-        </div>
+    {/* Looking straight at the page face */}
+    <button onClick={()=>setCam(c=>({...c, yaw:0, pitch:0, px:0}))} style={btnStyle}>FRONT</button>
+    
+    {/* Looking at the top edge (good for crease math) */}
+    <button onClick={()=>setCam(c=>({...c, yaw:0, pitch:1.57, px:0}))} style={btnStyle}>TOP</button>
+    
+    {/* Looking at the profile (perfect for seeing the bend arcs) */}
+    <button onClick={()=>setCam(c=>({...c, yaw:1.57, pitch:0, px:0}))} style={btnStyle}>SIDE</button>
+    
+    {/* Looking from underneath */}
+    <button onClick={()=>setCam(c=>({...c, yaw:0, pitch:-1.57, px:0}))} style={btnStyle}>UNDER</button>
+    
+    {/* Back to the nice 3D view */}
+    <button onClick={()=>setCam(c=>({...c, yaw:-0.6, pitch:0.35, px:20}))} style={{...btnStyle, color:'#f78166'}}>RESET</button>
+
+    <button onClick={() => setShowVisuals(!showVisuals)} style={{...btnStyle, background: showVisuals ? '#238636' : '#30363d'}}>
+       {showVisuals ? 'VISUALIZER: ON' : 'VISUALIZER: OFF'}
+    </button>
+</div>
 
         <div style={{position:'absolute', bottom:20, left:20, fontSize:10, color:'#8b949e'}}>
             DRAG TO ROTATE • SCROLL TO ZOOM (COMING SOON) • ORANGE LINE = CREASE • GREEN/BLUE = RADII ARCS
